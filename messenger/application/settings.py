@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
+    'chats',
+    'message',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +87,7 @@ DATABASES = {
     'default': {
         'ENGINE':
         'django.db.backends.postgresql_psycopg2',
-        'NAME': 'test',
+        'NAME': 'messenger_db',
         'USER': 'maxim',
         'PASSWORD': '1234',
         'HOST': '127.0.0.1',
