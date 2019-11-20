@@ -6,15 +6,18 @@ def index(request):
     return render(request, 'chat.html')
 
 
-def chat_detail(request):
+def get_chat(chat_id):
+    return {'name': 'John Doe', 'chat_id': chat_id}
+
+
+def chat_detail(request, chat_id):
     if request.method != 'GET':
         raise HttpResponseNotAllowed(['GET'])
-
-    chat_id = request.GET.get('chat_id')
-    if chat_id:
-        return JsonResponse({chat_id: {'name': 'smth'}})
-
-    raise Http404('No such user')
+    try:
+        chat = get_chat(chat_id)
+    except BaseException:
+        raise Http404('No such user')
+    return JsonResponse(chat)
 
 
 def chat_list(request):
