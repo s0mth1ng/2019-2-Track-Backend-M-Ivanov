@@ -5,5 +5,5 @@ urlpatterns = [
     path('index/', index, name='index'),
     path('profile/<int:user_id>/', get_profile, name='get_profile'),
     path('list/', users_list, name='users_list'),
-    path('find_profile/<str:name>/', find_profile, name='find_profile'),
+    path('find/<str:name>/', find_profile, name='find_profile'),
 ]

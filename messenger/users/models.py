@@ -14,7 +14,7 @@ class Member(models.Model):
         verbose_name = 'member'
         verbose_name_plural = 'members'
 
-    user = models.ForeignKey(User, verbose_name="User's name", on_delete=models.CASCADE)
-    chat = models.ForeignKey(Chat, verbose_name='Chat', on_delete=models.CASCADE)
-    last_read_message = models.ForeignKey('message.Message', verbose_name='Last read message', on_delete=models.CASCADE)
-    new_messages = models.TextField('New messages')
+    user = models.ForeignKey(User, verbose_name="User's name", null=True, on_delete=models.SET_NULL)
+    chat = models.ForeignKey(Chat, verbose_name='Chat', null=True, on_delete=models.SET_NULL)
+    last_read_message = models.ForeignKey('message.Message', null=True, on_delete=models.SET_NULL)
+    new_messages = models.TextField('New messages', null=True, blank=True)
