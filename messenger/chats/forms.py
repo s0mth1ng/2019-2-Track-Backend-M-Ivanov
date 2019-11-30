@@ -4,36 +4,39 @@ from chats.models import Chat
 from users.models import User, Member
 
 
-class ChatForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=25)
-    second_name = forms.CharField(max_length=25)
+class ChatForm(forms.Form):
+    first_nick = forms.CharField(max_length=32)
+    second_nick = forms.CharField(max_length=32)
 
-    def clean_first_name(self):
-        cleaned_name = self.cleaned_data['first_name']
+    def clean_first_nick(self):
+        cleaned_nick = self.cleaned_data['first_nick']
         try:
-            User.objects.get(name=cleaned_name)
+            User.objects.get(nick=cleaned_nick)
         except User.DoesNotExist:
-            self.add_error('first_name', 'User does not exist')
-        return cleaned_name
+            self.add_error('first_nick', 'User does not exist')
+        return cleaned_nick
 
-    def clean_second_name(self):
-        cleaned_name = self.cleaned_data['second_name']
+    def clean_second_nick(self):
+        cleaned_nick = self.cleaned_data['second_nick']
         try:
-            User.objects.get(name=cleaned_name)
+            User.objects.get(nick=cleaned_nick)
         except User.DoesNotExist:
-            self.add_error('second_name', 'User does not exist')
-        return cleaned_name
+            self.add_error('second_nick', 'User does not exist')
+        return cleaned_nick
 
     def clean(self):
-        first = self.cleaned_data['first_tag']
-        second = self.cleaned_data['second_tag']
-        chat_name = '&'.join(sorted([first, second]))
-        if Chat.objects.filter(name=chat_name).exists():
-            self.add_error('chat', 'already exists')
+        # import ipdb
+        # ipdb.set_trace()
+        if len(self.errors) == 0:
+            first = self.cleaned_data['first_nick']
+            second = self.cleaned_data['second_nick']
+            chat_name = '&'.join(sorted([first, second]))
+            if Chat.objects.filter(name=chat_name).exists():
+                self.add_error(None, 'Chat already exists')
 
     def save(self, **kwargs):
-        first = self.cleaned_data['first_tag']
-        second = self.cleaned_data['second_tag']
+        first = self.cleaned_data['first_nick']
+        second = self.cleaned_data['second_nick']
 
         chat_name = '&'.join(sorted([first, second]))
         chat = Chat.objects.create(
@@ -41,15 +44,13 @@ class ChatForm(forms.ModelForm):
             is_group_chat=False,
         )
 
-        first_user = User.objects.get(name=first)
+        first_user = User.objects.get(nick=first)
         Member.objects.create(
             user=first_user,
             chat=chat,
-            new_messages=0,
         )
-        second_user = User.objects.get(name=second)
+        second_user = User.objects.get(nick=second)
         Member.objects.create(
             user=second_user,
             chat=chat,
-            new_messages=0,
         )

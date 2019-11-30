@@ -1,18 +1,11 @@
 from django.core import serializers
 from django.http import HttpResponseNotAllowed, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from message.forms import ReadMessageForm, SendMessageForm
-from message.models import Message
 
 
-def get_messages(request, chat_id):
-    if request.method != 'GET':
-        return HttpResponseNotAllowed(['GET'])
-    messages = Message.objects.filter(chat=chat_id)
-    messages_serialized = serializers.serialize('json', messages)
-    return JsonResponse(messages_serialized, safe=False)
-
-
+@csrf_exempt
 def send_message(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -26,6 +19,7 @@ def send_message(request):
     return JsonResponse({'errors': form.errors}, status=400)
 
 
+@csrf_exempt
 def read_message(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])

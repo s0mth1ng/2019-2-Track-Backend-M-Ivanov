@@ -9,10 +9,11 @@ class Message(models.Model):
         )
 
     chat = models.ForeignKey(Chat, null=True, on_delete=models.SET_NULL)
-    user = models.ForeignKey('users.User', null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey('users.User', null=True,
+                             on_delete=models.SET_NULL)
 
-    content = models.TextField()
-    added_at = models.DateTimeField()
+    content = models.TextField(max_length=1000)
+    added_at = models.DateTimeField(auto_now=True)
 
 
 class Attachment(models.Model):
@@ -23,6 +24,7 @@ class Attachment(models.Model):
     TYPE = (
         (1, 'Image'),
         (2, 'Video'),
+        (3, 'Voice message'),
     )
     attachment_type = models.PositiveSmallIntegerField(
         choices=TYPE,

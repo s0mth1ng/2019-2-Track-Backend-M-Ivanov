@@ -5,19 +5,28 @@ from message.models import Message
 from users.models import Member, User
 
 
-class SendMessageForm(forms.ModelForm):
-    class Meta:
-        model = Message
-        fields = ['chat', 'user', 'content', 'added_at']
+class SendMessageForm(forms.Form):
+    chat_id = forms.IntegerField()
+    user_id = forms.IntegerField()
+    content = forms.CharField(max_length=1000)
 
-    def clean(self):
-        try:
-            Member.objects.get(
-                user=self.cleaned_data.get('user'),
-                chat=self.cleaned_data.get('chat'),
-            )
-        except Member.DoesNotExist:
-            self.add_error('user', 'Member does not exist')
+    def clean_chat_id(self):
+        chat_id = self.cleaned_data['chat_id']
+        if not Chat.objects.filter(id=chat_id).exists():
+            self.add_error('chat_id', 'Chat does not exist')
+        return chat_id
+
+    def clean_user_id(self):
+        user_id = self.cleaned_data['user_id']
+        if not User.objects.filter(id=user_id).exists():
+            self.add_error('user_id', 'User does not exist')
+        return user_id
+
+    def save(self):
+        chat = Chat.objects.get(id=self.cleaned_data.get('chat_id'))
+        user = User.objects.get(id=self.cleaned_data.get('user_id'))
+        content = self.cleaned_data['content']
+        return Message.objects.create(user=user, chat=chat, content=content)
 
 
 class ReadMessageForm(forms.Form):
@@ -46,13 +55,15 @@ class ReadMessageForm(forms.Form):
     def clean(self):
         chat = Chat.objects.get(id=self.cleaned_data.get('chat_id'))
         user = User.objects.get(id=self.cleaned_data.get('user_id'))
+        message = Message.objects.get(id=self.cleaned_data['message_id'])
         if not Member.objects.filter(chat=chat, user=user).exists():
-            self.add_error('user_id', 'Member does not exist')
+            self.add_error('user_id', 'User does not exist')
 
     def save(self):
         chat = Chat.objects.get(id=self.cleaned_data['chat_id'])
         user = User.objects.get(id=self.cleaned_data['user_id'])
         message = Message.objects.get(id=self.cleaned_data['message_id'])
         member = Member.objects.get(chat=chat, user=user)
-        member.last_read_message = message
-        member.save()
+        if member.last_read_message.added_at < message.added_at:
+            member.last_read_message = message
+            member.save()
