@@ -25,8 +25,6 @@ class ChatForm(forms.Form):
         return cleaned_nick
 
     def clean(self):
-        # import ipdb
-        # ipdb.set_trace()
         if len(self.errors) == 0:
             first = self.cleaned_data['first_nick']
             second = self.cleaned_data['second_nick']
@@ -54,3 +52,4 @@ class ChatForm(forms.Form):
             user=second_user,
             chat=chat,
         )
+        return chat

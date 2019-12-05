@@ -13,7 +13,7 @@ class Message(models.Model):
                              on_delete=models.SET_NULL)
 
     content = models.TextField(max_length=1000)
-    added_at = models.DateTimeField(auto_now=True)
+    added_at = models.DateTimeField(auto_now_add=True)
 
 
 class Attachment(models.Model):

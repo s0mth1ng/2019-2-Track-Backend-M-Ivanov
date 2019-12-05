@@ -64,6 +64,6 @@ class ReadMessageForm(forms.Form):
         user = User.objects.get(id=self.cleaned_data['user_id'])
         message = Message.objects.get(id=self.cleaned_data['message_id'])
         member = Member.objects.get(chat=chat, user=user)
-        if member.last_read_message.added_at < message.added_at:
+        if member.last_read_message is not None and member.last_read_message.added_at < message.added_at:
             member.last_read_message = message
             member.save()

@@ -18,7 +18,7 @@ def chat_detail(request, chat_id):
     try:
         chat = Chat.objects.get(id=chat_id)
     except Chat.DoesNotExist:
-        return HttpResponse('Chat does not exist')
+        return JsonResponse({'error': 'Chat does not exist'}, status=404)
     return JsonResponse({'id': chat.id,
                          'name': chat.name})
 
@@ -29,7 +29,7 @@ def chat_messages(request, chat_id):
     try:
         chat = Chat.objects.get(id=chat_id)
     except Chat.DoesNotExist:
-        return HttpResponse('Chat does not exist')
+        return JsonResponse({'error': 'Chat does not exist'}, status=404)
 
     messages = Message.objects.filter(chat=chat)
     return JsonResponse({'data': list(messages.values())})
@@ -41,7 +41,7 @@ def chat_list(request, user_id):
     try:
         user = User.objects.get(id=user_id)
     except User.DoesNotExist:
-        return HttpResponse('User does not exist')
+        return JsonResponse({'error': 'User does not exist'}, status=404)
     chat_ids = Member.objects.filter(
         user=user).values_list('chat_id', flat=True)
     chats = Chat.objects.filter(id__in=chat_ids)
@@ -55,6 +55,6 @@ def create_personal_chat(request):
     print(request.POST)
     form = ChatForm(request.POST)
     if form.is_valid():
-        form.save()
-        return JsonResponse({'message': 'Chat created'})
+        chat = form.save()
+        return JsonResponse({'id': chat.id})
     return JsonResponse({'errors': form.errors}, status=400)
