@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     name = models.CharField("User's name", max_length=32)
     nick = models.CharField('Nickname', max_length=32)
-    avatar = models.ImageField('Profile picture', blank=True)
+    avatar = models.ImageField('Profile picture', upload_to='avatars/', blank=True)
 
 
 class Member(models.Model):

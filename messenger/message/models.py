@@ -12,7 +12,7 @@ class Message(models.Model):
     user = models.ForeignKey('users.User', null=True,
                              on_delete=models.SET_NULL)
 
-    content = models.TextField(max_length=1000)
+    content = models.TextField(max_length=1000, blank=True)
     added_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -30,4 +30,4 @@ class Attachment(models.Model):
         choices=TYPE,
         default=1,
     )
-    url = models.URLField()
+    attachment_file = models.FileField(upload_to='attachments/')

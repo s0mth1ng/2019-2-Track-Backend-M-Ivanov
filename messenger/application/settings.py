@@ -135,6 +135,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_S3_ENDPOINT_URL = 'http://hb.bizmrg.com'
+AWS_ACCESS_KEY_ID = 'wBAGUqjUkaekkwfvAkY1RV'
+AWS_SECRET_ACCESS_KEY = '8NjayJeQCpEaMCesajpNC6AzUmW3f7Nx1vM87QBUTzrS'
+AWS_STORAGE_BUCKET_NAME = 'track.ivanov'
+
+MEDIA_ROOT = '/home/maxim/code/2019-2-Track-Backend-M-Ivanov/messenger/media/'
 
 try:
     from .local_settings import *
